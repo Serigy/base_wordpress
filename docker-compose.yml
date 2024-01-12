@@ -1,0 +1,106 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: password
+  redis:
+    image: redis:alpine
+    restart: always
+  wp:
+    depends_on:
+      - db
+      - redis
+    image: wordpress:latest
+    volumes:
+      - ./educacaoalianca.com.br:/var/www/html
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_CONFIG_EXTRA: |
+        /* Redis */
+        define('WP_REDIS_HOST', 'redis');
+        define('WP_REDIS_PORT', '6379');
+        define('WP_REDIS_DATABASE', '0');
+        define('WP_REDIS_PASSWORD', '');
+        define('WP_REDIS_MAXTTL', '86400');
+        define('WP_REDIS_GLOBAL_GROUPS', [
+          'users',
+          'userlogins',
+          'usermeta',
+          'user_meta',
+          'site-transient',
+          'site-options',
+          'blog-lookup',
+          'blog-details',
+          'rss',
+          'global-posts',
+          'blog-id-cache',
+          'networks',
+          'sites',
+          'site-details',
+          'site-lookup',
+          'blog_meta',
+          'blog-details',
+          'site-options',
+          'site-transient',
+          'users',
+          'userlogins',
+          'user_meta',
+          'useremail',
+          'user-settings',
+          'user-settings-time',
+          'user-settings-time-',
+          'user-settings-',
+          'user-settings-',
+          'userslugs',
+          'useremail',
+          'user_nicename',
+          'userslugs',
+          'userlogins',
+          'useremail',
+          'user_nicename',
+          'userslugs',
+          'site-lookup',
+          'blog-lookup',
+          'blog-details',
+          'site-details',
+          'rss',
+          'global-posts',
+          'blog-id-cache',
+          'networks',
+          'sites',
+          'blog_meta',
+          'blog-details',
+          'site-options',
+          'site-transient',
+          'users',
+          'userlogins',
+          'user_meta',
+          'useremail',
+          'user_nicename',
+          'userslugs',
+          'user-settings',
+          'user-settings-time',
+          'user-settings-time-',
+          'user-settings-',
+          'user-settings-',
+          'userslugs',
+          'userlogins',
+          'useremail',
+          'user_nic
+
+networks:
+  wp:
